@@ -25,7 +25,7 @@ services:
 #    on-failure: exit code가 0일 아닐때(비정상 종료인 경우)만 재시작
 #    unless-stopped: 컨테이너 상태를 수동으로 stop 하기전까지 재시작.
     ports:
-      - 8081:8081
+      - 9001:8081
     environment:
       - ME_CONFIG_MONGODB_SERVER=$ME_CONFIG_MONGODB_SERVER
       - ME_CONFIG_MONGODB_PORT=$ME_CONFIG_MONGODB_PORT
@@ -48,7 +48,7 @@ services:
       - db:/var/lib/mysql
 
   app:
-    depends_on:
+    depends_on: # 서비스 실행 순서, db 서비스 실행 후 app 서비스 실행
       - mongodb
       - mysqldb
     build: . # 동일 디렉토리에 위치한 Dockerfile을 사용하여 web 서비스 이미지 빌드
@@ -58,12 +58,12 @@ services:
       - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
     environment:
       SPRING_APPLICATION_JSON: '{
-          "spring.r2dbc.url" : "r2dbc:mysql://mysqldb:3306/test",
-          "spring.r2dbc.username" : "root",
-          "spring.r2dbc.password" : "1234",
-          "spring.data.mongodb.uri" : "mongodb://mongodb:27017/test",
-          "spring.data.mongodb.username" : "root",
-          "spring.data.mongodb.password" : "1234"
+          "spring.r2dbc.url" : "$MYSQLDB_URL",
+          "spring.r2dbc.username" : "$MYSQLDB_USER",
+          "spring.r2dbc.password" : "$MYSQLDB_ROOT_PASSWORD",
+          "spring.data.mongodb.uri" : "$MONGO_INITDB_URI",
+          "spring.data.mongodb.username" : "$MONGO_INITDB_ROOT_USERNAME",
+          "spring.data.mongodb.password" : "$MONGO_INITDB_ROOT_PASSWORD"
         }'
     volumes:
       - .m2:/root/.m2
