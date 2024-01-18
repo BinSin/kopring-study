@@ -1,0 +1,13 @@
+server:
+  port: 9000
+
+spring:
+  r2dbc:
+    url: r2dbc:h2:mem:///test
+    username: root
+    password: 1234
+  data:
+    mongodb:
+      uri: mongodb://mongodb:27017/test # ??? ???? ??? ? localhost? ?? ?? (?? ??? ????? ??)
+      username: root
+      password: 1234
